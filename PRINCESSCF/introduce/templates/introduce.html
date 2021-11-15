@@ -14,7 +14,23 @@
     <div>
         <p>{{i.name}}</p>
         <p>{{i.team}}</p>
-        <p>{{i.tag}}</p>
+        <p>{{i.school}}</p>
+        <p>{{i.introduce}}</p>
+        <p> 
+            {% for obj in i.participate.all %}
+            {{obj}}
+            {% endfor%}
+        </p>
+        <p>
+            {% for obj in i.interest.all %}
+            {{obj}}
+            {% endfor%}
+        </p>
+        <p>
+            {% for obj in i.hashtag.all %}
+            {{obj}}
+            {% endfor%}
+        </p>
     </div>
     <br>
     {% endfor %}
