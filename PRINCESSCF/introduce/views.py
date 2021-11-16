@@ -1,7 +1,6 @@
 from .serializers import MemberSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
 import json
 import urllib3
 from typing import Dict
@@ -127,8 +126,7 @@ def set_data():
 
 def introduce(request):
     set_data()
-    introduce = Member.objects.all()
-    return render(request, "introduce.html", {'introduce': introduce})
+    return HttpResponse(status=200)
 
 
 @csrf_exempt
@@ -139,15 +137,15 @@ def member_list(request):
         return JsonResponse(serializer.data, safe=False)
 
 
-# @csrf_exempt
-# def member_detail(request, name):
-#     try:
-#         member = Member.objects.get(name=name)
-#     except Member.DoesNotExist:
-#         return HttpResponse(status=404)
-#     if request.method == 'GET':
-#         serializer = MemberSerializer(member)
-#         return JsonResponse(serializer.data)
+@csrf_exempt
+def member_detail(request, name):
+    try:
+        member = Member.objects.get(name=name)
+    except Member.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = MemberSerializer(member)
+        return JsonResponse(serializer.data)
 
 
 @csrf_exempt
