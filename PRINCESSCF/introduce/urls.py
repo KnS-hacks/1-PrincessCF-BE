@@ -19,6 +19,6 @@ from .views import *
 urlpatterns = [
     path('', introduce, name='introduce'),
     path('members', member_list),
-    path('member/<str:name>', member_detail),
+    path('member/<int:pk>', member_detail),
     path('team/<int:team>', team_member),
 ]

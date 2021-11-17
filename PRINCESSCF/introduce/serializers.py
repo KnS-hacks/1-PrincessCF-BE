@@ -9,8 +9,11 @@ class MemberSerializer(serializers.ModelSerializer):
         many=True, queryset=Interest.objects.all())
     participate = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Participate.objects.all())
+    mbti = serializers.PrimaryKeyRelatedField(many=True,
+                                              queryset=MBTI.objects.all())
 
     class Meta:
         model = Member
-        fields = ('name', 'team', 'school', 'participate', 'introduce',
-                  'interest', 'hashtag')
+        fields = ('id', 'name', 'team', 'school', 'participate', 'mbti',
+                  'introduce', 'motto', 'interest', 'hashtag', 'github',
+                  'instagram')

@@ -48,7 +48,8 @@ def load_notionAPI_introduce():
     data = []
     for r in source['results']:
         name = r['properties']['이름']['title'][0]['plain_text']
-        team = r['properties']['팀']['select']['name']
+        team = r['properties']['팀']['select']['name'] if '팀' in r[
+            'properties'] else None
         participate = ([
             l['name'] for l in r['properties']['참여기수']['multi_select']
         ]) if '참여기수' in r['properties'] else None
@@ -58,20 +59,32 @@ def load_notionAPI_introduce():
                 'content']
         except:
             introduce = None
+        mbti = r['properties']['MBTI']['select']['name'] if 'MBTI' in r[
+            'properties'] else None
+        try:
+            motto = r['properties']['좌우명']['rich_text'][0]['text']['content']
+        except:
+            motto = None
         interest = ([
             l['name'] for l in r['properties']['관심분야']['multi_select']
         ]) if '관심분야' in r['properties'] else None
         hashtag = ([
             l['name'] for l in r['properties']['\x08해쉬태그']['multi_select']
         ]) if '\x08해쉬태그' in r['properties'] else None
+        github = r['properties']['Github']['url']
+        instagram = r['properties']['Instagram']['url']
         data.append({
             'name': name,
             'team': team,
             'school': school,
+            'mbti': mbti,
             'introduce': introduce,
+            'motto': motto,
             'interest': interest,
             'hashtag': hashtag,
             'participate': participate,
+            'github': github,
+            'instagram': instagram,
         })
     return {'statusCode': 200, 'body': data}
 
@@ -79,33 +92,35 @@ def load_notionAPI_introduce():
 def set_data():
     data = load_notionAPI_introduce()['body']
     t = []
-    e = []
-    m = []
-    temp = []
     # Data Update or Create
     for d in data:
         i, created = Member.objects.update_or_create(name=d['name'])
         i.team = d['team']
         i.school = d['school']
         i.introduce = d['introduce']
+        i.motto = d['motto']
+        i.github = d['github']
+        i.instagram = d['instagram']
         # interest
         if d['interest']:
             for inte in d['interest']:
                 obj, c = Interest.objects.get_or_create(name=inte)
                 i.interest.add(obj)
-                e.append(inte)
+        # MBTI
+        if d['mbti']:
+            for mb in d['mbti']:
+                obj, c = MBTI.objects.get_or_create(name=mb)
+                i.mbti.add(obj)
         # hashtag
         if d['hashtag']:
             for hash in d['hashtag']:
                 obj, c = HashTag.objects.get_or_create(name=hash)
                 i.hashtag.add(obj)
-                m.append(hash)
         # participate
         if d['participate']:
             for p in d['participate']:
                 obj, c = Participate.objects.get_or_create(name=p)
                 i.participate.add(obj)
-                temp.append(p)
         i.save()
         t.append(d['name'])
 
@@ -113,15 +128,6 @@ def set_data():
     for db in Member.objects.all():
         if not db.name in t:
             Member.objects.get(name=db.name).delete()
-    for db in Interest.objects.all():
-        if not db.name in e:
-            Interest.objects.get(name=db.name).delete()
-    for db in HashTag.objects.all():
-        if not db.name in m:
-            HashTag.objects.get(name=db.name).delete()
-    for db in Participate.objects.all():
-        if not db.name in temp:
-            Participate.objects.get(name=db.name).delete()
 
 
 def introduce(request):
@@ -138,9 +144,9 @@ def member_list(request):
 
 
 @csrf_exempt
-def member_detail(request, name):
+def member_detail(request, pk):
     try:
-        member = Member.objects.get(name=name)
+        member = Member.objects.get(id=pk)
     except Member.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
