@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # Introduce
     'introduce.apps.IntroduceConfig',
+    # Music
+    'music.apps.MusicConfig',
 ]
 
 MIDDLEWARE = [
