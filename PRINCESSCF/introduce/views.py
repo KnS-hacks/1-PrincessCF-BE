@@ -142,20 +142,15 @@ def introduce(request):
 @csrf_exempt
 def member_list(request):
     if request.method == 'GET':
+        members = Member.objects.all().order_by('name')
         if request.GET.get('team'):
-            # Members Value
-            members = Member.objects.order_by('name')
             # Team Parameter
             if request.GET.get('team') == 'true':
-                members = Member.objects.order_by('team')
-
-        # if request.GET.get('page'):
-        #     members = members[0:8]
-        # value = int(request.GET.get('page'))
-        # print(value)
-        # members = members[0:8]
-        # print("%d", len(members))
-
+                members = Member.objects.all().order_by('team')
+        if request.GET.get('page'):
+            val = int(request.GET.get('page'))
+            members = members[(val - 1) * 8:val * 8]
+            print(members)
         serializer = MemberSerializer(members, many=True)
         return JsonResponse(serializer.data, safe=False)
 

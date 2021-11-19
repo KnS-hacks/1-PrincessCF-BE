@@ -9,6 +9,7 @@ from .serializers import MusicSerializer
 
 # Create your views here.
 
+
 @api_view(['GET', 'POST'])
 def music_list(request):
     if request.method == 'POST':
@@ -21,15 +22,16 @@ def music_list(request):
         music_serializer = MusicSerializer(musics, many=True)
         return Response(music_serializer.data)
 
+
 @api_view(['POST'])
 def get_music(request):
     if request.mehod == 'POST':
         if request.POST['who'] != None and request.POST['who'] == 'ningpop':
             musics = Music.objects.filter(is_not_played=True).order_by('id')
-            
-            if len(musics) == 0: # 신청곡이 없을 때
+
+            if len(musics) == 0:  # 신청곡이 없을 때
                 return HttpResponse("", content_type="application/text")
-            
+
             music = musics[0]
             msg = f"{music.artist} {music.title}"
             music.is_not_played = False
