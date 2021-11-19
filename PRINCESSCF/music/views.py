@@ -23,10 +23,10 @@ def music_list(request):
         return Response(music_serializer.data)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def get_music(request):
-    if request.mehod == 'POST':
-        if request.POST['who'] != None and request.POST['who'] == 'ningpop':
+    if request.method == 'GET':
+        if request.GET['who'] != None and request.GET['who'] == 'ningpop':
             musics = Music.objects.filter(is_not_played=True).order_by('id')
 
             if len(musics) == 0:  # 신청곡이 없을 때
