@@ -73,6 +73,8 @@ def load_notionAPI_introduce():
         ]) if '\x08해쉬태그' in r['properties'] else None
         github = r['properties']['Github']['url']
         instagram = r['properties']['Instagram']['url']
+        pic = r['properties']['Pic']['files'][0]['file']['url'] if r[
+            'properties']['Pic']['files'] else None
         data.append({
             'name': name,
             'team': team,
@@ -85,6 +87,7 @@ def load_notionAPI_introduce():
             'participate': participate,
             'github': github,
             'instagram': instagram,
+            'pic': pic
         })
     return {'statusCode': 200, 'body': data}
 
@@ -101,6 +104,7 @@ def set_data():
         i.motto = d['motto']
         i.github = d['github']
         i.instagram = d['instagram']
+        i.pic = d['pic']
         # interest
         if d['interest']:
             for inte in d['interest']:
@@ -138,7 +142,20 @@ def introduce(request):
 @csrf_exempt
 def member_list(request):
     if request.method == 'GET':
-        members = Member.objects.all()
+        if request.GET.get('team'):
+            # Members Value
+            members = Member.objects.order_by('name')
+            # Team Parameter
+            if request.GET.get('team') == 'true':
+                members = Member.objects.order_by('team')
+
+        # if request.GET.get('page'):
+        #     members = members[0:8]
+        # value = int(request.GET.get('page'))
+        # print(value)
+        # members = members[0:8]
+        # print("%d", len(members))
+
         serializer = MemberSerializer(members, many=True)
         return JsonResponse(serializer.data, safe=False)
 

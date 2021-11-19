@@ -42,6 +42,7 @@ class Member(models.Model):
     hashtag = models.ManyToManyField(HashTag, blank=True)
     github = models.URLField(blank=True, null=True, max_length=100)
     instagram = models.URLField(blank=True, null=True, max_length=100)
+    pic = models.URLField(blank=True, null=True, max_length=100)
 
     def __str__(self):
         return self.name
