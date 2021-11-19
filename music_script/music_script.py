@@ -8,6 +8,16 @@ import shutil
 import pyautogui
 import requests
 
+def get_secret_key() -> dict:
+    with open("secret.json", "r") as secret:
+        key = json.load(secret)
+    
+    key_list = {}
+    key_list['ID'] = key["ID"]
+    key_list['PW'] = key["PW"]
+
+    return key_list
+
 try:
     shutil.rmtree(r"C:\chrometemp")  # remove Cookie, Cache files
 except FileNotFoundError:
@@ -40,11 +50,11 @@ driver.get('https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.
 driver.maximize_window()
 
 # Google login page
-pyautogui.write('craft19333')    # Fill in your ID or E-mail
+pyautogui.write(get_secret_key()[0])    # Fill in your ID or E-mail
 pyautogui.press('tab', presses=3)   # Press the Tab key 3 times
 pyautogui.press('enter')
 time.sleep(3)   # wait a process
-pyautogui.write('gmacbook7383!')   # Fill in your PW
+pyautogui.write(get_secret_key()[1])   # Fill in your PW
 pyautogui.press('enter')
 time.sleep(7)   # wait a process
 pyautogui.press('esc')
