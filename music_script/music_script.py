@@ -62,22 +62,25 @@ while True:
 
         if len(music) != 0:
             try:
+                # 검색
                 driver.find_element_by_xpath('//*[@id="layout"]/ytmusic-nav-bar/div[2]/ytmusic-search-box').click()
                 driver.find_element_by_tag_name('input').send_keys(music)
                 pyautogui.press('enter')
+
                 time.sleep(2)
+
+                # 음악 추가
                 more = driver.find_element_by_xpath('//*[@id="contents"]/ytmusic-responsive-list-item-renderer')
                 hover = ActionChains(driver).move_to_element(more)
                 hover.perform()
                 driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-app-layout/div[3]/ytmusic-search-page/ytmusic-tabbed-search-results-renderer/div[2]/ytmusic-section-list-renderer/div[2]/ytmusic-shelf-renderer[1]/div[2]/ytmusic-responsive-list-item-renderer/ytmusic-menu-renderer/tp-yt-paper-icon-button').click()
                 driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-popup-container/tp-yt-iron-dropdown/div/ytmusic-menu-popup-renderer/tp-yt-paper-listbox/ytmusic-menu-service-item-renderer[2]').click()
 
-                if is_first_song:
-                    is_first_song = False
-                else:
-                    driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-app-layout/ytmusic-nav-bar/div[2]/ytmusic-search-box/div/div[1]/tp-yt-paper-icon-button[2]').click()
-                    time.sleep(1)
+                # 검색창 비우기
+                driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-app-layout/ytmusic-nav-bar/div[2]/ytmusic-search-box/div/div[1]/tp-yt-paper-icon-button[2]').click()
+                time.sleep(1)
             except:
+                # 홈으로 가기
                 driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-app-layout/ytmusic-nav-bar/div[1]/a').click()
         time.sleep(10)
     except:
